@@ -1,0 +1,14 @@
+# Virtual environment — rebuild with `uv sync` from uv.lock
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Hugging Face datasets cache
+.cache/
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db

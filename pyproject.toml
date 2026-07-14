@@ -1,0 +1,31 @@
+[project]
+name = "testig-uv"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "datasets>=5.0.0",
+    "numpy>=2.5.1",
+    "pandas>=3.0.3",
+    "scikit-learn>=1.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.21",
+]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
