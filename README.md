@@ -1,75 +1,65 @@
-**Task:** Setting up a python env
-1)	run uv init .
-this creates markdown file, main file, a pyproject file, a python-version file
-2)	run uv add numpy pandas scikit-learn datasets
-now the virtual environment folder will also be created.
-3)	.\.venv\Scripts\activate
-This activates virtual environment
-4)	Python main.py
-This runs the main file
+# IMDB Sentiment Classifier
 
+A sentiment classifier for IMDB movie reviews: TF-IDF features and logistic
+regression, trained on the 25,000-review Stanford IMDB training split and
+evaluated on the held-out 25,000-review test split.
 
-# Prompt Log — Sentiment Classifier (IMDB)
+## Results
 
-**Task:** Train a simple classifier on a public dataset (chose IMDB movie reviews for sentiment).
-**Tools:** Python, HuggingFace `datasets`, pandas, scikit-learn.
+| Metric | Score |
+| --- | --- |
+| Test accuracy | 88% |
+| Precision / recall / F1 | ~0.88 across both classes |
 
----
+The confusion matrix is close to symmetric (1,520 false positives against 1,480
+false negatives), so the model is not biased toward either sentiment.
 
-## 1. Planning the pipeline
-**Prompt:** Asked for an explanation of the full ML process — download → preprocessing → split → evaluate.
-**Outcome / learning:** Understood the standard flow: load data → clean text → vectorize → split (train/test/validation) → train classifier → evaluate. Learned that for text, preprocessing has two parts: cleaning *and* converting words to numbers.
+## Approach
 
-## 2. Loading the dataset
-**Prompt:** How to download/import the dataset.
-**Outcome / learning:** Used `load_dataset("stanfordnlp/imdb")`. Learned that `datasets` v5 requires the full `owner/name` path (bare `"imdb"` no longer works). Dataset comes pre-split into `train` and `test`, each row `{text, label}` with label 0=negative, 1=positive.
+1. **Load** the `stanfordnlp/imdb` dataset via HuggingFace `datasets`, which
+   ships with `train` / `test` splits already separated.
+2. **Clean** each review: lowercase, strip HTML tags (the raw reviews contain
+   `<br />`), strip URLs, drop punctuation, collapse repeated whitespace.
+3. **Vectorize** with `TfidfVectorizer(stop_words="english")`. The vectorizer is
+   fit on the training split only and then applied to the test split, so no test
+   vocabulary or IDF statistics leak into training.
+4. **Train** a `LogisticRegression` classifier — a strong, fast baseline for
+   high-dimensional sparse text features.
+5. **Evaluate** with accuracy, a classification report, and a confusion matrix.
 
-## 3. Environment / setup issues
-**Notes:** Hit a stuck Jupyter kernel while the dataset was downloading; resolved by killing the kernel processes and reloading. Installed `datasets` into the project virtualenv (pandas/scikit-learn/numpy were already present).
+No separate validation split is used: the dataset ships with a test split, and
+with a single model at default settings there is no hyperparameter search that
+would require one.
 
-## 4. Preprocessing — cleaning
-**Prompt:** How to lowercase the whole column, then remove HTML tags, URLs, punctuation, and extra spaces.
-**Outcome / learning:**
-- Lowercasing a whole column uses `.str.lower()` (not `.lower()`, which only works on a single string).
-- Built a `clean_text()` function using the `re` module:
-  - `<[^>]*>` → remove HTML tags (e.g. `<br />`)
-  - `https?://\S+` → remove URLs
-  - `[^\w\s]` → remove punctuation/symbols (keep only word chars + whitespace)
-  - `\s+` → collapse extra whitespace, then `.strip()`
-- Learned to apply a function across a column with `.apply(clean_text)`, and to assign back to `df["text"]` (not `df`) to preserve the `label` column.
-- Understood `r"..."` raw strings for regex, and that `^` means "start of string" outside `[]` but "not" inside `[]`.
+## Project structure
 
-## 5. Vectorizing (text → numbers)
-**Prompt:** What is TF-IDF, and how does scikit-learn do it.
-**Outcome / learning:**
-- TF-IDF = Term Frequency × Inverse Document Frequency: scores words high when frequent in a review but rare across all reviews.
-- Used `TfidfVectorizer(stop_words='english')` — the `stop_words` param handles stop-word removal automatically.
-- Learned the `fit`/`transform` pattern: **fit on train only**, transform both train and test, to avoid data leakage.
-- `fit_transform` on train, `transform` on test — using ONE saved vectorizer object so both share the same vocabulary/IDF.
+```
+data_prep.py            cleaning and loading utilities
+main.py                 training and evaluation pipeline
+tests/test_data_prep.py unit tests for the cleaning utilities
+docs/PROMPT_LOG.md      development log
+```
 
-## 6. Splitting / validation
-**Prompt:** Do we need a validation set?
-**Outcome / learning:** IMDB already ships train/test splits. For a single simple model with default settings, a separate validation set isn't required. It's only needed when tuning/comparing models (to keep the test set as an honest final exam).
+## Setup
 
-## 7. Training the classifier
-**Prompt:** Why Logistic Regression.
-**Outcome / learning:**
-- Chose `LogisticRegression` — fast, handles high-dimensional sparse TF-IDF data well, interpretable, strong baseline (~88–90% on IMDB).
-- Learned that data goes to `.fit(X, y)`, NOT the constructor; constructor takes settings only.
-- `X_train` = TF-IDF feature matrix (from vectorizer); `y_train` = the `label` column (came with the data, just renamed).
-- Imports must be specific: `from sklearn.linear_model import LogisticRegression` (top-level `import sklearn` doesn't expose submodules).
+Requires Python 3.13+ and [uv](https://docs.astral.sh/uv/).
 
-## 8. Evaluation
-**Prompt:** How to evaluate / calculate error.
-**Outcome / learning:**
-- Predict with `model.predict(X_test)`, then compare to `Y_test`.
-- Used `accuracy_score`, `classification_report`, and `confusion_matrix`.
-- **Result: 88% accuracy**, balanced across both classes.
-- Confusion matrix: 10980 TN, 11020 TP, 1520 FP, 1480 FN — errors roughly equal, so no class bias.
+```bash
+uv sync
+```
 
----
+## Usage
 
-## Result summary
-Final model: TF-IDF (with English stop words) + Logistic Regression on IMDB → **~88% test accuracy**, balanced precision/recall/F1 across positive and negative classes.
+```bash
+uv run python main.py
+```
 
+The first run downloads the IMDB dataset (~80 MB) and caches it locally.
+Training takes well under a minute on CPU.
 
+## Development
+
+```bash
+uv run pytest        # run the test suite
+uv run ruff check .  # lint
+```
