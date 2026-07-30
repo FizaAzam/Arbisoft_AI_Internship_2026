@@ -16,12 +16,6 @@
 ## 3. Environment / setup issues
 **Notes:** Hit a stuck Jupyter kernel while the dataset was downloading; resolved by killing the kernel processes and reloading. Installed `datasets` into the project virtualenv (pandas/scikit-learn/numpy were already present).
 
-Environment setup itself:
-1. `uv init .` — creates the readme, main file, `pyproject.toml`, and `.python-version`.
-2. `uv add numpy pandas scikit-learn datasets` — also creates the virtualenv folder.
-3. `.\.venv\Scripts\activate` — activates the virtualenv.
-4. `python main.py` — runs the pipeline.
-
 ## 4. Preprocessing — cleaning
 **Prompt:** How to lowercase the whole column, then remove HTML tags, URLs, punctuation, and extra spaces.
 **Outcome / learning:**
@@ -62,11 +56,9 @@ Environment setup itself:
 - **Result: 88% accuracy**, balanced across both classes.
 - Confusion matrix: 10980 TN, 11020 TP, 1520 FP, 1480 FN — errors roughly equal, so no class bias.
 
-## 9. Testing and project layout
-**Prompt:** Write unit tests for the data-prep functions.
-**Outcome / learning:** Importing a module runs it top to bottom, so `clean_text` had to move out of `main.py` (which downloads the dataset and trains at import time) into `data_prep.py`. `main.py` now guards its pipeline behind `if __name__ == "__main__":`, which is only true when a file is run directly and not when it is imported. Tests import `data_prep` alone and run without touching the network.
-
 ---
 
 ## Result summary
 Final model: TF-IDF (with English stop words) + Logistic Regression on IMDB → **~88% test accuracy**, balanced precision/recall/F1 across positive and negative classes.
+
+
