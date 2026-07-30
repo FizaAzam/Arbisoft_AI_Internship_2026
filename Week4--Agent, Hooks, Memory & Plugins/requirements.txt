@@ -1,0 +1,20 @@
+# Core framework: gives us the @tool decorator and create_agent loop
+langchain>=1.0
+
+# Model providers.
+# langchain-openai talks to ANY OpenAI-compatible API (OpenAI, Groq, Together,
+# OpenRouter...) just by changing base_url. That's the whole point of the
+# "OpenAI-compatible" standard.
+langchain-openai>=1.0
+
+# Reads secret keys out of the .env file so they never end up in your code
+python-dotenv>=1.0
+
+# For calling the SerpAPI Search HTTP API
+requests>=2.32
+
+# Extracts text from PDF files for the read_file tool
+pdfplumber>=0.11
+
+# Checkpointer (InMemorySaver) for agent memory — comes via langchain, declared explicitly since we import it directly
+langgraph>=1.0
