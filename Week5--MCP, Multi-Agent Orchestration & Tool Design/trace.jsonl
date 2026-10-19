@@ -1,0 +1,19 @@
+{"ts": "2026-08-06T13:27:31.812+00:00", "event": "routing", "agent": "supervisor", "decision": "reader", "reason": "The request only asks about the current state of the to-do list.", "request": "what's pending on my list?"}
+{"ts": "2026-08-06T13:27:31.845+00:00", "event": "agent_start", "agent": "reader", "request": "what's pending on my list?"}
+{"ts": "2026-08-06T13:27:44.982+00:00", "event": "tool_start", "agent": "reader", "tool": "read_tasks", "args": "{}"}
+{"ts": "2026-08-06T13:27:45.066+00:00", "event": "tool_end", "agent": "reader", "duration_ms": 84, "result": "content='[\\n  {\\n    \"id\": 1,\\n    \"title\": \"Buy books\",\\n    \"priority\": \"high\",\\n    \"done\": false\\n  },\\n  {\\n    \"id\": 2,\\n    \"title\": \"Read books\",\\n    \"priority\": \"medium\",\\n    \"done\": false\\"}
+{"ts": "2026-08-06T13:27:48.587+00:00", "event": "agent_end", "agent": "reader", "duration_ms": 16741, "reply": "You have two pending tasks: \u201cBuy books\u201d (high priority) and \u201cRead books\u201d (medium priority)."}
+{"ts": "2026-08-06T13:28:03.163+00:00", "event": "routing", "agent": "supervisor", "decision": "writer", "reason": "The request only adds a task with a priority, no question about the list.", "request": "add a task to buy milk, high priority"}
+{"ts": "2026-08-06T13:28:03.175+00:00", "event": "agent_start", "agent": "writer", "request": "add a task to buy milk, high priority"}
+{"ts": "2026-08-06T13:28:05.602+00:00", "event": "tool_start", "agent": "writer", "tool": "add_task", "args": "{'priority': 'high', 'title': 'Buy milk'}"}
+{"ts": "2026-08-06T13:28:05.640+00:00", "event": "tool_end", "agent": "writer", "duration_ms": 38, "result": "content=[{'type': 'text', 'text': \"Added task #4: 'Buy milk' (priority: high)\", 'id': 'lc_c18e01a3-6a54-4eea-933f-c1d7ee4b05f6'}] name='add_task' tool_call_id='call-271b62e9-f9b4-4673-9f7b-470a00c8e4c"}
+{"ts": "2026-08-06T13:28:07.684+00:00", "event": "agent_end", "agent": "writer", "duration_ms": 4508, "reply": "Added task #4: 'Buy milk' (priority: high)"}
+{"ts": "2026-08-06T13:28:08.686+00:00", "event": "routing", "agent": "supervisor", "decision": "both", "reason": "The request both adds a task and asks for the current pending list.", "request": "add a task to call mom, then tell me what's still pending"}
+{"ts": "2026-08-06T13:28:08.688+00:00", "event": "agent_start", "agent": "writer", "request": "add a task to call mom"}
+{"ts": "2026-08-06T13:28:11.454+00:00", "event": "tool_start", "agent": "writer", "tool": "add_task", "args": "{'title': 'Call Mom', 'priority': 'medium'}"}
+{"ts": "2026-08-06T13:28:11.459+00:00", "event": "tool_end", "agent": "writer", "duration_ms": 6, "result": "content=[{'type': 'text', 'text': \"Added task #5: 'Call Mom' (priority: medium)\", 'id': 'lc_f5390d8a-6520-423f-94fe-ae4843367df2'}] name='add_task' tool_call_id='call-bf4575b5-6361-4fea-b219-4ca0b5622"}
+{"ts": "2026-08-06T13:28:16.680+00:00", "event": "agent_end", "agent": "writer", "duration_ms": 7991, "reply": "Added task #5: 'Call Mom' (priority: medium)"}
+{"ts": "2026-08-06T13:28:16.681+00:00", "event": "agent_start", "agent": "reader", "request": "tell me what is still pending"}
+{"ts": "2026-08-06T13:28:19.305+00:00", "event": "tool_start", "agent": "reader", "tool": "read_tasks", "args": "{}"}
+{"ts": "2026-08-06T13:28:19.309+00:00", "event": "tool_end", "agent": "reader", "duration_ms": 4, "result": "content='[\\n  {\\n    \"id\": 1,\\n    \"title\": \"Buy books\",\\n    \"priority\": \"high\",\\n    \"done\": false\\n  },\\n  {\\n    \"id\": 2,\\n    \"title\": \"Read books\",\\n    \"priority\": \"medium\",\\n    \"done\": false\\"}
+{"ts": "2026-08-06T13:28:22.306+00:00", "event": "agent_end", "agent": "reader", "duration_ms": 5624, "reply": "You have 4 pending tasks: Buy books, Read books, Buy milk, and Call Mom."}

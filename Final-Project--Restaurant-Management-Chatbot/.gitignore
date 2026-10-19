@@ -1,0 +1,8 @@
+.env
+__pycache__/
+.venv/
+node_modules/
+dist/
+*.log
+uvicorn.out
+uvicorn.err

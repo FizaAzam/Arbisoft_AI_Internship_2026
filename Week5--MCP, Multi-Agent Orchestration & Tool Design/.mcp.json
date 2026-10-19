@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "task-manager": {
+      "command": "c:\\Users\\Dell\\Desktop\\Internship\\week5-MCP, Multi-Agent Orchestration & Tool Design\\.venv\\Scripts\\python.exe",
+      "args": ["c:\\Users\\Dell\\Desktop\\Internship\\week5-MCP, Multi-Agent Orchestration & Tool Design\\server.py"]
+    }
+  }
+}
